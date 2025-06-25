@@ -127,6 +127,7 @@ npm run dev
 - **TypeScript Configuration Update (5min)**: I realized that during the initial setup, I created the frontend without TypeScript configuration. To maintain consistency with the backend and ensure type safety across the entire application, I updated the frontend configuration to use TypeScript.
 
 - **Frontend Architecture Setup (1h)**: Defined the frontend architecture to support the slot machine game requirements:
+
   - **Styling Framework**: Installed and configured Tailwind CSS for easy styling. Tailwind provides utility classes that make it simple to create responsive and modern interfaces without writing custom CSS.
   - **Basic UI Components**: Created reusable UI components to maintain consistency across the application:
     - `Button` component for interactive elements like spin and cashout actions
@@ -136,3 +137,5 @@ npm run dev
   - **State Management Decision**: Created a `contexts` folder and implemented React Context for state management. I decided to use Context API instead of introducing more complex state management libraries (like Redux) to keep the application simple and avoid unnecessary complexity for such a straightforward UI structure.
   - **Authentication Flow**: Implemented automatic sign up logic on app initialization to create a seamless user experience without requiring manual registration.
   - **Game Assets**: Added slot machine symbols (cherry, lemon, orange, watermelon) as PNG assets to provide visual representation for the game symbols.
+
+- **User API and Features (20min)**: Added user API integration and created a `features` folder for components with business logic. Implemented `UserBalance` feature component to display user balance.
