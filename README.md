@@ -111,7 +111,7 @@ npm run dev
 
 - **Authorization Implementation (30min)**: Even though standard authentication wasn't required in the task, I implemented a comprehensive authorization system that follows common auth patterns. Each game session is treated as a separate user with a JWT token for session management. This approach provides better security, scalability, and clean separation between different player sessions.
 
-- **Swagger API Documentation Setup**: Implemented comprehensive Swagger documentation for all API endpoints with proper decorators, response types, and authentication requirements. The interactive API documentation is available at `/api/docs` and includes detailed descriptions, request/response examples, and the ability to test endpoints directly from the browser interface.
+- **Swagger API Documentation Setup (10min)**: Implemented comprehensive Swagger documentation for all API endpoints with proper decorators, response types, and authentication requirements. The interactive API documentation is available at `/api/docs` and includes detailed descriptions, request/response examples, and the ability to test endpoints directly from the browser interface.
 
 - **Configuration Management Setup (10min)**: Implemented centralized configuration using `@nestjs/config` to replace scattered `process.env` usage throughout the codebase. This provides better type safety, centralized configuration, and easier environment switching.
 
@@ -121,3 +121,7 @@ npm run dev
   - **Credit Flow System**: I implemented a credit flow mechanism where credits are deducted from the session balance for each roll, and upon cash out, the remaining session balance is transferred back to the user's overall balance. This ensures credit tracking and prevents credit loss.
   - **Game Configuration Centralization**: I decided to move all game-related configuration (symbol rewards, cheating thresholds, cheating probabilities) to the application configuration module. This makes it easy to adjust game parameters like cheating behavior or winning credit amounts without services code changes, simply by modifying configuration file.
   - **Database Integration**: I set up database entities and repositories for game sessions and game rolls to maintain game state and provide game history tracking.
+
+### Step 4: Frontend Development
+
+- **TypeScript Configuration Update (5min)**: I realized that during the initial setup, I created the frontend without TypeScript configuration. To maintain consistency with the backend and ensure type safety across the entire application, I updated the frontend configuration to use TypeScript.
