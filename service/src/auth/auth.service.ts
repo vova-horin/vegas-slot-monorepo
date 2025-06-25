@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 import { DatabaseService } from "../database/database.service";
 import { User } from "../database/entities";
 import { AuthResponseDto } from "./dto/auth-response.dto";
@@ -8,7 +9,8 @@ import { AuthResponseDto } from "./dto/auth-response.dto";
 export class AuthService {
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   async signUp(): Promise<AuthResponseDto> {
@@ -25,6 +27,9 @@ export class AuthService {
 
   private generateAccessToken(user: User): string {
     const payload = { sub: user.id };
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get<string>("app.jwt.secret"),
+      expiresIn: this.configService.get<string>("app.jwt.expiresIn"),
+    });
   }
 }

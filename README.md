@@ -112,3 +112,5 @@ npm run dev
 - **Authorization Implementation (30min)**: Even though standard authentication wasn't required in the task, I implemented a comprehensive authorization system that follows common auth patterns. Each game session is treated as a separate user with a JWT token for session management. This approach provides better security, scalability, and clean separation between different player sessions.
 
 - **Swagger API Documentation Setup**: Implemented comprehensive Swagger documentation for all API endpoints with proper decorators, response types, and authentication requirements. The interactive API documentation is available at `/api/docs` and includes detailed descriptions, request/response examples, and the ability to test endpoints directly from the browser interface.
+
+- **Configuration Management Setup (10min)**: Implemented centralized configuration using `@nestjs/config` to replace scattered `process.env` usage throughout the codebase. This provides better type safety, centralized configuration, and easier environment switching.
