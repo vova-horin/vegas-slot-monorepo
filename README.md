@@ -104,3 +104,9 @@ npm run dev
 - **Backend Setup**: Used NestJS CLI to create an empty NestJS application with minimal configuration. The service includes just one health endpoint (`/health`) for basic connectivity testing.
 - **Architecture Decision**: Decided to make frontend and service fully independent applications that can be developed, deployed, and run separately. This allows for better separation of concerns and flexibility in deployment strategies.
 - Both applications are configured to run on their default ports (frontend: 3000, backend: 4000) and are ready for development.
+
+### Step 3: Backend Development
+
+- **Development Order Decision**: I decided to develop the backend API first before working on the frontend. This approach allow me to establish a well-defined endpoints and business logic, making it easier to build the frontend with confidence that the API contracts are stable and functional.
+
+- **Authorization Implementation**: Even though standard authentication wasn't required in the task, I implemented a comprehensive authorization system that follows common auth patterns. Each game session is treated as a separate user with a JWT token for session management. This approach provides better security, scalability, and clean separation between different player sessions.
