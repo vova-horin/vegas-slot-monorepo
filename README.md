@@ -114,3 +114,10 @@ npm run dev
 - **Swagger API Documentation Setup**: Implemented comprehensive Swagger documentation for all API endpoints with proper decorators, response types, and authentication requirements. The interactive API documentation is available at `/api/docs` and includes detailed descriptions, request/response examples, and the ability to test endpoints directly from the browser interface.
 
 - **Configuration Management Setup (10min)**: Implemented centralized configuration using `@nestjs/config` to replace scattered `process.env` usage throughout the codebase. This provides better type safety, centralized configuration, and easier environment switching.
+
+- **Main Game Session Logic Implementation (2h)**: Designed and implemented the core game mechanics with a balance management system:
+  - **Balance Architecture**: I decided to implement a two-tier balance system where users have an overall balance that allocates 10 credits to each new session. This approach provides better control over credit distribution and prevents players from creating multiple sessions to exploit the system.
+  - **Session Lifecycle Management**: I created a complete session management system where users can start a new game session, perform rolls during the session, and cash out when finished. Each roll result is stored in the database to have the game history.
+  - **Credit Flow System**: I implemented a credit flow mechanism where credits are deducted from the session balance for each roll, and upon cash out, the remaining session balance is transferred back to the user's overall balance. This ensures credit tracking and prevents credit loss.
+  - **Game Configuration Centralization**: I decided to move all game-related configuration (symbol rewards, cheating thresholds, cheating probabilities) to the application configuration module. This makes it easy to adjust game parameters like cheating behavior or winning credit amounts without services code changes, simply by modifying configuration file.
+  - **Database Integration**: I set up database entities and repositories for game sessions and game rolls to maintain game state and provide game history tracking.
