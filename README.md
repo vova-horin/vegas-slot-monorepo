@@ -13,15 +13,36 @@ A full-stack slot machine game built with React (Tailwind CSS) frontend and Nest
 
 - Node.js (v18+)
 - npm or yarn
+- Docker and Docker Compose (for containerized setup)
 
-### Backend Setup
+### Option 1: Docker Compose
+
+The easiest way to run the application is using Docker Compose, which will start both frontend and backend services with a single command:
+
+```bash
+# Start both applications
+docker compose up
+
+# Stop the applications
+docker compose down
+```
+
+The applications will be available at:
+
+- Frontend: http://localhost:3000
+- Backend: http://localhost:4000
+- API Documentation: http://localhost:4000/api/docs
+
+### Option 2: Manual Setup
+
+#### Backend Setup
 
 ```bash
 # Navigate to backend directory
 cd service
 
 # Install dependencies
-npm install
+npm install∂
 
 # Copy environment file
 cp .env.example .env
@@ -32,7 +53,7 @@ npm run start:dev
 
 The backend will be available at `http://localhost:4000`
 
-### Frontend Setup
+#### Frontend Setup
 
 ```bash
 # Navigate to frontend directory
@@ -151,3 +172,10 @@ npm run dev
   - **Visual Feedback**: Added spinning animations and win/loss notifications for better user experience.
 
 - **Spinning Animation Implementation (20min)**: Created a simple CSS spinning animation with staggered timing using setTimeout to reveal each symbol at different intervals (1s, 2s, 3s) for a more engaging slot machine experience.
+
+### Step 5: Testing
+
+- **Docker Setup (15min)**: I decided to set up Docker for easy development and testing from scratch. This allows anyone to run the application without worrying about local environment setup or dependencies. The Docker configuration includes:
+  - **Dockerfile**: Implemented Docker builds for both frontend and backend
+  - **Docker Compose**: Created a `docker-compose.yml` file that orchestrates both frontend and backend services
+- **Dependency Conflict Fix (5 min)**: I discovered a dependency conflict between `@nestjs/swagger` and `@nestjs/common` libraries. I resolved this by downgrading `@nestjs/swagger` to a compatible version.
