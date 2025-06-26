@@ -98,7 +98,7 @@ npm run dev
 - House cheating activates at 40+ credits (30% re-roll chance)
 - Increased cheating at 60+ credits (60% re-roll chance)
 
-## Development Journey
+## Development Journey (~9h)
 
 ### Step 1: Read the task and choose tech stack (20min)
 
@@ -126,7 +126,7 @@ npm run dev
 - **Architecture Decision**: Decided to make frontend and service fully independent applications that can be developed, deployed, and run separately. This allows for better separation of concerns and flexibility in deployment strategies.
 - Both applications are configured to run on their default ports (frontend: 3000, backend: 4000) and are ready for development.
 
-### Step 3: Backend Development
+### Step 3: Backend Development (~3h)
 
 - **Development Order Decision**: I decided to develop the backend API first before working on the frontend. This approach allow me to establish a well-defined endpoints and business logic, making it easier to build the frontend with confidence that the API contracts are stable and functional.
 
@@ -143,7 +143,7 @@ npm run dev
   - **Game Configuration Centralization**: I decided to move all game-related configuration (symbol rewards, cheating thresholds, cheating probabilities) to the application configuration module. This makes it easy to adjust game parameters like cheating behavior or winning credit amounts without services code changes, simply by modifying configuration file.
   - **Database Integration**: I set up database entities and repositories for game sessions and game rolls to maintain game state and provide game history tracking.
 
-### Step 4: Frontend Development
+### Step 4: Frontend Development (~4h)
 
 - **TypeScript Configuration Update (5min)**: I realized that during the initial setup, I created the frontend without TypeScript configuration. To maintain consistency with the backend and ensure type safety across the entire application, I updated the frontend configuration to use TypeScript.
 
@@ -173,9 +173,34 @@ npm run dev
 
 - **Spinning Animation Implementation (20min)**: Created a simple CSS spinning animation with staggered timing using setTimeout to reveal each symbol at different intervals (1s, 2s, 3s) for a more engaging slot machine experience.
 
-### Step 5: Testing
+### Step 5: Testing (30min)
 
 - **Docker Setup (15min)**: I decided to set up Docker for easy development and testing from scratch. This allows anyone to run the application without worrying about local environment setup or dependencies. The Docker configuration includes:
   - **Dockerfile**: Implemented Docker builds for both frontend and backend
   - **Docker Compose**: Created a `docker-compose.yml` file that orchestrates both frontend and backend services
 - **Dependency Conflict Fix (5 min)**: I discovered a dependency conflict between `@nestjs/swagger` and `@nestjs/common` libraries. I resolved this by downgrading `@nestjs/swagger` to a compatible version.
+- **Issues fixed (15min)**:
+  - **Game State Management Enhancement**: I found that the game state management was not properly handling the spinning animation state and roll results. I fixed this by adding `pendingRollResult` and `isSpinning` states to the GameContext.
+  - **React StrictMode Rendering Issue**: React StrictMode was causing double rendering issues during development, which was interfering with the game's state and animations. I fixed this by removing StrictMode from the main rendering.
+  - **Error Handling Improvements**: I found that error messages from API calls were not being properly displayed to users. I implemented an `extractErrorMessage` function for better error handling.
+  - **Cashout Button State Management**: I discovered that the cashout button was not being disabled during spinning, which could lead to inconsistent game state. So I disabled the cashout button during spinning.
+
+### Step 6: Final Code Review and Verification (15min)
+
+- **Comprehensive Code Review**: Conducted a thorough review of the entire codebase to ensure all task requirements were properly implemented:
+  - Verified server-side cheating mechanism works correctly at 40+ credits (30% re-roll) and 60+ credits (60% re-roll)
+  - Confirmed client-side spinning animations with staggered reveal timing (1s, 2s, 3s)
+  - Validated session management and credit system functionality
+  - Checked cash-out endpoint implementation and session closure
+- **Additional Functionality Verification**: Reviewed the extra features that were added to enhance the user experience beyond the basic requirements:
+  - **Authentication System**: JWT-based authentication with automatic user creation to meet the task requirements
+  - **API Documentation**: Comprehensive Swagger documentation for all endpoints
+  - **Game History**: Database storage of all game rolls for tracking and potential future features
+  - **Enhanced UI/UX**: Modern styling with Tailwind CSS, proper loading states, and visual feedback
+  - **Docker Support**: Containerized setup for easy deployment and testing
+
+### Conclusion
+
+Overall, the task was not particularly challenging from a technical standpoint. However, I decided to implement additional production-like features beyond the basic requirements to create a more polished and realistic application. This included authentication, API documentation, game history tracking, enhanced UI/UX, and Docker containerization. These extra features extended the development time, resulting in approximately 9 hours total including reading and understanding the task, setup, development, testing, and documentation.
+
+Thank you for this fun assignment and good luck with the review!
