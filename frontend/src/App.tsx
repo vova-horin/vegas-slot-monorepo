@@ -12,7 +12,7 @@ const AppContent: React.FC = () => {
     // Simulate loading state
     const timeout = setTimeout(() => {
       signUp();
-    }, 2000);
+    }, 1000);
 
     return () => {
       clearTimeout(timeout);
