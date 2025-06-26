@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { AuthProvider, useAuth } from "./contexts";
 import Home from "./pages/Home";
+import { GameProvider } from "./contexts/GameContext";
 
 const AppContent: React.FC = () => {
   const { isLoading, signUp, logout } = useAuth();
@@ -34,7 +35,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <GameProvider>
+        <AppContent />
+      </GameProvider>
     </AuthProvider>
   );
 };

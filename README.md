@@ -139,3 +139,12 @@ npm run dev
   - **Game Assets**: Added slot machine symbols (cherry, lemon, orange, watermelon) as PNG assets to provide visual representation for the game symbols.
 
 - **User API and Features (20min)**: Added user API integration and created a `features` folder for components with business logic. Implemented `UserBalance` feature component to display user balance.
+
+- **Game API Integration and UI Implementation (2h)**: Connected frontend to backend game API:
+  - **Game API Integration**: Integrated frontend with api for sessions, rolls, and cashout. Added loading states.
+  - **Game UI Components**: Built game interface in `features/game` folder:
+    - `Game` component for main slot machine display and controls
+    - `GameMachine` component for visual slot machine with spinning animations
+    - `SessionBalance` component for session credits and cashout
+  - **Game State Management**: Added game context to manage session state and balance across components.
+  - **Visual Feedback**: Added spinning animations and win/loss notifications for better user experience.

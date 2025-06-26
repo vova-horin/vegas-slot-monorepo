@@ -14,8 +14,8 @@ export const UserBalance: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center gap-2 p-4 bg-white rounded-lg shadow-sm border">
-      <BalanceLabel balance={user.gameCredits} />
+    <div className="flex items-center gap-2 p-4 bg-white rounded-lg shadow-sm">
+      <BalanceLabel balance={user.gameCredits} label="User Credits" />
     </div>
   );
 };

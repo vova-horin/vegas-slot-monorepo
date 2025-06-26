@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { UserBalance } from "../features/user";
+import { Game } from "../features/game/Game";
 
 const Home: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -14,8 +15,9 @@ const Home: React.FC = () => {
           </h1>
         </div>
         {isAuthenticated && (
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-4 flex-col">
             <UserBalance />
+            <Game />
           </div>
         )}
       </div>

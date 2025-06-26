@@ -64,20 +64,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
-  // Check authentication status on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        setIsAuthenticated(true);
-        await refreshUser();
-      }
-      setIsLoading(false);
-    };
-
-    checkAuth();
-  }, []);
-
   const value: AuthContextType = {
     isAuthenticated,
     isLoading,
