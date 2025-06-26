@@ -184,6 +184,7 @@ npm run dev
   - **React StrictMode Rendering Issue**: React StrictMode was causing double rendering issues during development, which was interfering with the game's state and animations. I fixed this by removing StrictMode from the main rendering.
   - **Error Handling Improvements**: I found that error messages from API calls were not being properly displayed to users. I implemented an `extractErrorMessage` function for better error handling.
   - **Cashout Button State Management**: I discovered that the cashout button was not being disabled during spinning, which could lead to inconsistent game state. So I disabled the cashout button during spinning.
+  - **Fixed Docker Compose Environment**: I had missed adding VITE_API_URL in the docker-compose configuration, so I fixed it.
 
 ### Step 6: Final Code Review and Verification (15min)
 
