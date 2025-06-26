@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useGame } from "../../contexts/GameContext";
-import { RollSymbol } from "../../api/game";
+import { RollSymbol, RollResponse } from "../../api/game";
 import cherryImg from "../../assets/cherry.png";
 import lemonImg from "../../assets/lemon.png";
 import orangeImg from "../../assets/orange.png";
@@ -15,23 +15,26 @@ const symbolImages: Record<RollSymbol, string> = {
 };
 
 export const GameMachine: React.FC = () => {
-  const { roll, isRolling, sessionBalance, rollHistory } = useGame();
+  const {
+    roll,
+    isRolling,
+    isSpinning,
+    sessionBalance,
+    rollHistory,
+    pendingRollResult,
+  } = useGame();
   const [revealedSymbols, setRevealedSymbols] = useState<boolean[]>([
     false,
     false,
     false,
   ]);
-  const [isSpinning, setIsSpinning] = useState(false);
 
   useEffect(() => {
-    if (isRolling && !isSpinning) {
-      setIsSpinning(true);
+    if (isSpinning && pendingRollResult) {
+      // Reset revealed symbols when spinning starts
       setRevealedSymbols([false, false, false]);
-    }
-  }, [isRolling, isSpinning]);
 
-  useEffect(() => {
-    if (isSpinning && rollHistory.length > 0 && !isRolling) {
+      // Reveal symbols one by one during spinning
       setTimeout(() => {
         setRevealedSymbols((prev) => [true, prev[1], prev[2]]);
       }, 1000);
@@ -43,12 +46,11 @@ export const GameMachine: React.FC = () => {
       setTimeout(() => {
         setRevealedSymbols((prev) => [prev[0], prev[1], true]);
       }, 3000);
-
-      setTimeout(() => {
-        setIsSpinning(false);
-      }, 3500);
+    } else if (!isSpinning) {
+      // Show all symbols when spinning stops
+      setRevealedSymbols([true, true, true]);
     }
-  }, [isSpinning, rollHistory, isRolling]);
+  }, [isSpinning, pendingRollResult]);
 
   const handleRoll = async () => {
     try {
@@ -81,14 +83,10 @@ export const GameMachine: React.FC = () => {
       return (
         <div className="flex justify-center space-x-4">
           {[0, 1, 2].map((index) => {
-            if (
-              isSpinning &&
-              rollHistory.length > 0 &&
-              revealedSymbols[index]
-            ) {
+            if (isSpinning && pendingRollResult && revealedSymbols[index]) {
               return (
                 <div key={index} className="animate-spin-once">
-                  {renderSymbol(rollHistory[0].symbols[index])}
+                  {renderSymbol(pendingRollResult.symbols[index])}
                 </div>
               );
             } else {

@@ -18,8 +18,10 @@ interface GameContextType {
   sessionBalance: number;
   isSessionActive: boolean;
   rollHistory: RollResponse[];
+  pendingRollResult: RollResponse | null;
 
   isRolling: boolean;
+  isSpinning: boolean;
   isStartingSession: boolean;
   isCashingOut: boolean;
 
@@ -28,6 +30,7 @@ interface GameContextType {
   cashout: () => Promise<CashoutResponse | null>;
   clearSession: () => void;
   clearRollHistory: () => void;
+  extractErrorMessage: (err: any) => string;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -42,12 +45,28 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     null
   );
   const [rollHistory, setRollHistory] = useState<RollResponse[]>([]);
+  const [pendingRollResult, setPendingRollResult] =
+    useState<RollResponse | null>(null);
   const [isRolling, setIsRolling] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
   const [isStartingSession, setIsStartingSession] = useState(false);
   const [isCashingOut, setIsCashingOut] = useState(false);
 
   const sessionBalance = currentSession?.credits || 0;
   const isSessionActive = currentSession?.isActive || false;
+
+  const extractErrorMessage = useCallback((err: any): string => {
+    // Try to get the error message from the backend response
+    if (err.response?.data?.message) {
+      return err.response.data.message;
+    }
+    // Fallback to the error message property
+    if (err.message) {
+      return err.message;
+    }
+    // Final fallback
+    return "An error occurred. Please try again.";
+  }, []);
 
   const startNewSession = useCallback(async (): Promise<void> => {
     try {
@@ -62,7 +81,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     } finally {
       setIsStartingSession(false);
     }
-  }, []);
+  }, [refreshUser]);
 
   const roll = useCallback(async (): Promise<RollResponse | null> => {
     if (!currentSession?.sessionId) {
@@ -72,22 +91,35 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
     try {
       setIsRolling(true);
+      setIsSpinning(true);
+
       const rollResult = await gameApi.roll(currentSession.sessionId);
 
-      setCurrentSession((prev) =>
-        prev
-          ? {
-              ...prev,
-              credits: rollResult.creditsAfter,
-            }
-          : null
-      );
+      // Store the result immediately for UI to access during spinning
+      setPendingRollResult(rollResult);
 
-      setRollHistory((prev) => [rollResult, ...prev]);
+      // Don't update main state immediately - wait for spinning to complete
+      // Keep spinning for 3.5 seconds to match the UI animation
+      setTimeout(() => {
+        setCurrentSession((prev) =>
+          prev
+            ? {
+                ...prev,
+                credits: rollResult.creditsAfter,
+              }
+            : null
+        );
+
+        setRollHistory((prev) => [rollResult, ...prev]);
+        setPendingRollResult(null);
+        setIsSpinning(false);
+      }, 3500);
 
       return rollResult;
     } catch (error) {
       console.error("Failed to roll:", error);
+      setIsSpinning(false);
+      setPendingRollResult(null);
       throw error;
     } finally {
       setIsRolling(false);
@@ -131,7 +163,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     sessionBalance,
     isSessionActive,
     rollHistory,
+    pendingRollResult,
     isRolling,
+    isSpinning,
     isStartingSession,
     isCashingOut,
     startNewSession,
@@ -139,6 +173,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     cashout,
     clearSession,
     clearRollHistory,
+    extractErrorMessage,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

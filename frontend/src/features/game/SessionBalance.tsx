@@ -3,7 +3,7 @@ import { useGame } from "../../contexts/GameContext";
 import BalanceLabel from "../../components/BalanceLabel";
 
 export const SessionBalance: React.FC = () => {
-  const { sessionBalance, cashout, isCashingOut } = useGame();
+  const { sessionBalance, cashout, isCashingOut, isSpinning } = useGame();
 
   const handleCashout = async () => {
     try {
@@ -21,7 +21,7 @@ export const SessionBalance: React.FC = () => {
         </div>
         <button
           onClick={handleCashout}
-          disabled={isCashingOut || sessionBalance <= 0}
+          disabled={isCashingOut || isSpinning || sessionBalance <= 0}
           className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
         >
           {isCashingOut ? "Cashing Out..." : "Cash Out"}
