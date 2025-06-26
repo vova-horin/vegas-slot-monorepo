@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useGame } from "../../contexts/GameContext";
 import { RollSymbol } from "../../api/game";
 import cherryImg from "../../assets/cherry.png";
@@ -16,6 +16,39 @@ const symbolImages: Record<RollSymbol, string> = {
 
 export const GameMachine: React.FC = () => {
   const { roll, isRolling, sessionBalance, rollHistory } = useGame();
+  const [revealedSymbols, setRevealedSymbols] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  useEffect(() => {
+    if (isRolling && !isSpinning) {
+      setIsSpinning(true);
+      setRevealedSymbols([false, false, false]);
+    }
+  }, [isRolling, isSpinning]);
+
+  useEffect(() => {
+    if (isSpinning && rollHistory.length > 0 && !isRolling) {
+      setTimeout(() => {
+        setRevealedSymbols((prev) => [true, prev[1], prev[2]]);
+      }, 1000);
+
+      setTimeout(() => {
+        setRevealedSymbols((prev) => [prev[0], true, prev[2]]);
+      }, 2000);
+
+      setTimeout(() => {
+        setRevealedSymbols((prev) => [prev[0], prev[1], true]);
+      }, 3000);
+
+      setTimeout(() => {
+        setIsSpinning(false);
+      }, 3500);
+    }
+  }, [isSpinning, rollHistory, isRolling]);
 
   const handleRoll = async () => {
     try {
@@ -33,19 +66,88 @@ export const GameMachine: React.FC = () => {
     />
   );
 
-  const renderRollingState = () => (
-    <div className="flex justify-center space-x-4">
-      {[1, 2, 3].map((index) => (
-        <div key={index} className="animate-pulse">
-          <img
-            src={noSlotImg}
-            alt="rolling"
-            className="w-12 h-12 object-contain opacity-50"
-          />
-        </div>
-      ))}
+  const renderSpinningSymbol = (index: number) => (
+    <div className="animate-pulse" key={index}>
+      <img
+        src={noSlotImg}
+        alt="rolling"
+        className="w-12 h-12 object-contain opacity-50"
+      />
     </div>
   );
+
+  const renderSlotDisplay = () => {
+    if (isRolling || isSpinning) {
+      return (
+        <div className="flex justify-center space-x-4">
+          {[0, 1, 2].map((index) => {
+            if (
+              isSpinning &&
+              rollHistory.length > 0 &&
+              revealedSymbols[index]
+            ) {
+              return (
+                <div key={index} className="animate-spin-once">
+                  {renderSymbol(rollHistory[0].symbols[index])}
+                </div>
+              );
+            } else {
+              return (
+                <div key={index} className="animate-spin">
+                  {renderSpinningSymbol(index)}
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
+    } else if (rollHistory.length > 0) {
+      return (
+        <div className="flex justify-center space-x-4">
+          {rollHistory[0].symbols.map((symbol, index) => (
+            <div key={index}>{renderSymbol(symbol)}</div>
+          ))}
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex justify-center space-x-4">
+          <img
+            src={noSlotImg}
+            alt="empty"
+            className="w-12 h-12 object-contain opacity-30"
+          />
+          <img
+            src={noSlotImg}
+            alt="empty"
+            className="w-12 h-12 object-contain opacity-30"
+          />
+          <img
+            src={noSlotImg}
+            alt="empty"
+            className="w-12 h-12 object-contain opacity-30"
+          />
+        </div>
+      );
+    }
+  };
+
+  const renderResultMessage = () => {
+    if (rollHistory.length > 0 && !isRolling && !isSpinning) {
+      return (
+        <div className="mt-4">
+          {rollHistory[0].isWin ? (
+            <p className="text-green-600 font-bold text-lg animate-pulse">
+              🎉 WIN! +{rollHistory[0].reward} credits
+            </p>
+          ) : (
+            <p className="text-gray-600">No win this time</p>
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -53,46 +155,16 @@ export const GameMachine: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Slot Machine</h2>
 
         <div className="bg-gray-100 rounded-lg p-6 mb-6">
-          {isRolling ? (
-            renderRollingState()
-          ) : rollHistory.length > 0 ? (
-            <div className="flex justify-center space-x-4">
-              {rollHistory[0].symbols.map((symbol, index) => (
-                <div key={index}>{renderSymbol(symbol)}</div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex justify-center space-x-4">
-              {[1, 2, 3].map((index) => (
-                <img
-                  key={index}
-                  src={noSlotImg}
-                  alt="empty"
-                  className="w-12 h-12 object-contain opacity-30"
-                />
-              ))}
-            </div>
-          )}
-
-          {rollHistory.length > 0 && !isRolling && (
-            <div className="mt-4">
-              {rollHistory[0].isWin ? (
-                <p className="text-green-600 font-bold text-lg">
-                  🎉 WIN! +{rollHistory[0].reward} credits
-                </p>
-              ) : (
-                <p className="text-gray-600">No win this time</p>
-              )}
-            </div>
-          )}
+          {renderSlotDisplay()}
+          {renderResultMessage()}
         </div>
 
         <button
           onClick={handleRoll}
-          disabled={isRolling || sessionBalance < 1}
+          disabled={isRolling || isSpinning || sessionBalance < 1}
           className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed font-bold text-lg"
         >
-          {isRolling ? "Rolling..." : "Roll (1 credit)"}
+          {isRolling || isSpinning ? "Rolling..." : "Roll (1 credit)"}
         </button>
       </div>
 
